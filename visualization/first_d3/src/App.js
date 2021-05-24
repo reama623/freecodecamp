@@ -50,21 +50,22 @@ function App() {
   const xScale = scaleLinear()
     .domain([0, max(data, (d) => d.Population)])
     .range([0, innerWidth]);
-  console.log(xScale.ticks());
   return (
     <div style={{ border: "1px solid black" }}>
       {!data && <div>Loading...</div>}
       <svg width={width} height={height}>
         <g transform={`translate(${margin.left}, ${margin.top})`}>
           {xScale.ticks().map((tick, i) => (
-            <line
-              key={i}
-              x1={xScale(tick)}
-              y1={0}
-              x2={xScale(tick)}
-              y2={innerHeight}
-              stroke="black"
-            />
+            <g transform={`translate(${xScale(tick)},0)`}>
+              <line key={i} y2={innerHeight} stroke="black" />
+              <text
+                y={innerHeight + 3}
+                dy=".71em"
+                style={{ textAnchor: "middle" }}
+              >
+                {tick}
+              </text>
+            </g>
           ))}
           {data.map((d, i) => {
             return (
