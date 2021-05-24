@@ -4,9 +4,14 @@ import { useEffect, useState } from "react";
 //   "https://gist.githubusercontent.com/reama623/b6c0dd948cecf951c7026220aa02fe57/raw/8e389ab4faadff97a8c9c5408bdcd9f8a7453376/cssNamedColors.csv";
 const url =
   "https://gist.githubusercontent.com/reama623/78bef39c78b6315b1f552d521d75a86b/raw/f822cbec76419981375d31903925990b7324fb1f/WPP2019_Population.csv";
+const width = 960;
+const height = 500;
+const margin = { top: 20, right: 20, bottom: 20, left: 40 };
+
+const innerWidth = width - margin.left - margin.right;
+const innerHeight = height - margin.top - margin.bottom;
+
 function App() {
-  const width = 960;
-  const height = 500;
   const [data, setData] = useState([]);
 
   const getData = () => {
@@ -33,7 +38,7 @@ function App() {
    */
   const yScale = scaleBand()
     .domain(data.map((d) => d.country))
-    .range([0, height]);
+    .range([0, innerHeight]);
 
   /**
    * xScale의 정의는, Population을 width에 매칭시키는 것이다.
@@ -44,22 +49,24 @@ function App() {
    */
   const xScale = scaleLinear()
     .domain([0, max(data, (d) => d.Population)])
-    .range([0, width]);
+    .range([0, innerWidth]);
   return (
-    <div>
+    <div style={{ border: "1px solid black" }}>
       {!data && <div>Loading...</div>}
       <svg width={width} height={height}>
-        {data.map((d, i) => {
-          return (
-            <rect
-              key={i}
-              x={0}
-              y={yScale(d.country)}
-              width={xScale(d.Population)}
-              height={yScale.bandwidth()}
-            />
-          );
-        })}
+        <g transform={`translate(${margin.left}, ${margin.top})`}>
+          {data.map((d, i) => {
+            return (
+              <rect
+                key={i}
+                x={0}
+                y={yScale(d.country)}
+                width={xScale(d.Population)}
+                height={yScale.bandwidth()}
+              />
+            );
+          })}
+        </g>
       </svg>
     </div>
   );
