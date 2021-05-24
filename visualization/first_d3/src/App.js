@@ -6,7 +6,7 @@ const url =
   "https://gist.githubusercontent.com/reama623/78bef39c78b6315b1f552d521d75a86b/raw/f822cbec76419981375d31903925990b7324fb1f/WPP2019_Population.csv";
 const width = 960;
 const height = 500;
-const margin = { top: 20, right: 20, bottom: 20, left: 40 };
+const margin = { top: 20, right: 20, bottom: 20, left: 20 };
 
 const innerWidth = width - margin.left - margin.right;
 const innerHeight = height - margin.top - margin.bottom;
@@ -50,11 +50,22 @@ function App() {
   const xScale = scaleLinear()
     .domain([0, max(data, (d) => d.Population)])
     .range([0, innerWidth]);
+  console.log(xScale.ticks());
   return (
     <div style={{ border: "1px solid black" }}>
       {!data && <div>Loading...</div>}
       <svg width={width} height={height}>
         <g transform={`translate(${margin.left}, ${margin.top})`}>
+          {xScale.ticks().map((tick, i) => (
+            <line
+              key={i}
+              x1={xScale(tick)}
+              y1={0}
+              x2={xScale(tick)}
+              y2={innerHeight}
+              stroke="black"
+            />
+          ))}
           {data.map((d, i) => {
             return (
               <rect
