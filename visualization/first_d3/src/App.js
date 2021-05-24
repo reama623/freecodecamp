@@ -6,7 +6,7 @@ const url =
   "https://gist.githubusercontent.com/reama623/78bef39c78b6315b1f552d521d75a86b/raw/f822cbec76419981375d31903925990b7324fb1f/WPP2019_Population.csv";
 const width = 960;
 const height = 500;
-const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+const margin = { top: 20, right: 20, bottom: 20, left: 200 };
 
 const innerWidth = width - margin.left - margin.right;
 const innerHeight = height - margin.top - margin.bottom;
@@ -66,6 +66,17 @@ function App() {
                 {tick}
               </text>
             </g>
+          ))}
+          {yScale.domain().map((tick, i) => (
+            <text
+              key={tick}
+              textAnchor="end"
+              x={-3}
+              dy=".32em"
+              y={yScale(tick) + yScale.bandwidth() / 2}
+            >
+              {tick}
+            </text>
           ))}
           {data.map((d, i) => {
             return (
