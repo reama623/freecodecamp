@@ -1,9 +1,10 @@
-import { csv, arc, scaleBand, scaleLinear, max } from "d3";
-import { useEffect, useState } from "react";
+import { scaleBand, scaleLinear, max } from "d3";
+import { AxisBottom } from "./AxisBottom";
+import { AxisLeft } from "./AxisLeft";
+import { Marks } from "./Marks";
+import useData from "./useData";
 // const url =
 //   "https://gist.githubusercontent.com/reama623/b6c0dd948cecf951c7026220aa02fe57/raw/8e389ab4faadff97a8c9c5408bdcd9f8a7453376/cssNamedColors.csv";
-const url =
-  "https://gist.githubusercontent.com/reama623/78bef39c78b6315b1f552d521d75a86b/raw/f822cbec76419981375d31903925990b7324fb1f/WPP2019_Population.csv";
 const width = 960;
 const height = 500;
 const margin = { top: 20, right: 20, bottom: 20, left: 200 };
@@ -12,21 +13,10 @@ const innerWidth = width - margin.left - margin.right;
 const innerHeight = height - margin.top - margin.bottom;
 
 function App() {
-  const [data, setData] = useState([]);
-
-  const getData = () => {
-    // 데이터가 string이기 때문에, 숫자로 바꿔주기 위해 +를 앞에 붙여준다.
-    // parseFloat를 쓸 필요 없이 + 연산자로 숫자로 바꿔줌.
-    const row = (d) => {
-      d.Population = +d["2020"];
-      return d;
-    };
-    csv(url, row).then((data) => setData(data.slice(0, 10)));
-  };
-  useEffect(() => {
-    getData();
-  }, []);
-
+  // custom 훅을 이용하여 데이터를 받아옴.
+  const data = useData();
+  const xValue = (d) => d.Population;
+  const yValue = (d) => d.country;
   /*
    * yScale은 scaleBand를 이용해 구하는데,
    * Band는 동일한 간격을 나누는 것이므로 domain이 필요 없이 range만 정해줘도 알아서 구해진다. -> 개소리..
@@ -36,9 +26,7 @@ function App() {
    * domain은 표현하기 위한 모든 나라를 배열로 리턴해주면 된다.
    * range는 0부터 높이로 표현 -> domain을 y축에 매칭시켜준다. 링크 참조(https://media.vlpt.us/images/badbeoti/post/ed3bd426-3263-4ae4-af4f-aa4b8bb8e11d/image.png)
    */
-  const yScale = scaleBand()
-    .domain(data.map((d) => d.country))
-    .range([0, innerHeight]);
+  const yScale = scaleBand().domain(data.map(yValue)).range([0, innerHeight]);
 
   /**
    * xScale의 정의는, Population을 width에 매칭시키는 것이다.
@@ -48,47 +36,23 @@ function App() {
    * 이런 계산을 ScaleLinear가 해준다고 생각하면 된다. 링크 참조(https://miro.medium.com/max/346/0*K2Na5iCzLQjePbUp)
    */
   const xScale = scaleLinear()
-    .domain([0, max(data, (d) => d.Population)])
+    .domain([0, max(data, xValue)])
     .range([0, innerWidth]);
+
   return (
     <div style={{ border: "1px solid black" }}>
       {!data && <div>Loading...</div>}
       <svg width={width} height={height}>
         <g transform={`translate(${margin.left}, ${margin.top})`}>
-          {xScale.ticks().map((tick, i) => (
-            <g transform={`translate(${xScale(tick)},0)`}>
-              <line key={i} y2={innerHeight} stroke="black" />
-              <text
-                y={innerHeight + 3}
-                dy=".71em"
-                style={{ textAnchor: "middle" }}
-              >
-                {tick}
-              </text>
-            </g>
-          ))}
-          {yScale.domain().map((tick, i) => (
-            <text
-              key={tick}
-              textAnchor="end"
-              x={-3}
-              dy=".32em"
-              y={yScale(tick) + yScale.bandwidth() / 2}
-            >
-              {tick}
-            </text>
-          ))}
-          {data.map((d, i) => {
-            return (
-              <rect
-                key={i}
-                x={0}
-                y={yScale(d.country)}
-                width={xScale(d.Population)}
-                height={yScale.bandwidth()}
-              />
-            );
-          })}
+          <AxisBottom xScale={xScale} innerHeight={innerHeight} />
+          <AxisLeft yScale={yScale} />
+          <Marks
+            data={data}
+            xScale={xScale}
+            yScale={yScale}
+            xValue={xValue}
+            yValue={yValue}
+          />
         </g>
       </svg>
     </div>
