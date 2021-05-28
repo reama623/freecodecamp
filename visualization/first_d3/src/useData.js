@@ -11,7 +11,7 @@ const useData = () => {
     // 데이터가 string이기 때문에, 숫자로 바꿔주기 위해 +를 앞에 붙여준다.
     // parseFloat를 쓸 필요 없이 + 연산자로 숫자로 바꿔줌.
     const row = (d) => {
-      d.Population = +d["2020"];
+      d.Population = +d["2020"] * 1000;
       return d;
     };
     csv(url, row).then((data) => setData(data.slice(0, 10)));

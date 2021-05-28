@@ -1,4 +1,4 @@
-import { scaleBand, scaleLinear, max } from "d3";
+import { scaleBand, scaleLinear, max, format } from "d3";
 import { AxisBottom } from "./AxisBottom";
 import { AxisLeft } from "./AxisLeft";
 import { Marks } from "./Marks";
@@ -29,7 +29,10 @@ function App() {
    * domain은 표현하기 위한 모든 나라를 배열로 리턴해주면 된다.
    * range는 0부터 높이로 표현 -> domain을 y축에 매칭시켜준다. 링크 참조(https://media.vlpt.us/images/badbeoti/post/ed3bd426-3263-4ae4-af4f-aa4b8bb8e11d/image.png)
    */
-  const yScale = scaleBand().domain(data.map(yValue)).range([0, innerHeight]);
+  const yScale = scaleBand()
+    .domain(data.map(yValue))
+    .range([0, innerHeight])
+    .padding(0.2);
 
   /**
    * xScale의 정의는, Population을 width에 매칭시키는 것이다.
@@ -42,12 +45,24 @@ function App() {
     .domain([0, max(data, xValue)])
     .range([0, innerWidth]);
 
+  const tickFormatter = format(".2s");
+  const axisTickFormat = (n) => {
+    if (!n) {
+      return 0;
+    }
+    return tickFormatter(n).replace("G", "B");
+  };
+
   return (
     <div style={{ border: "1px solid black" }}>
       {!data && <div>Loading...</div>}
       <svg width={width} height={height}>
         <g transform={`translate(${margin.left}, ${margin.top})`}>
-          <AxisBottom xScale={xScale} innerHeight={innerHeight} />
+          <AxisBottom
+            xScale={xScale}
+            innerHeight={innerHeight}
+            axisTickFormat={axisTickFormat}
+          />
           <AxisLeft yScale={yScale} />
           <Marks
             data={data}
@@ -55,6 +70,7 @@ function App() {
             yScale={yScale}
             xValue={xValue}
             yValue={yValue}
+            tooltipFormat={axisTickFormat}
           />
         </g>
       </svg>
