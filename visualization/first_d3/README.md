@@ -73,4 +73,12 @@
             * range는 svg의 내부 너비와 높이 그대로다.(0부터 시작)
           * 산점도는 단어 그대로 점으로 표현하는 그래프이기 때문에, x,y좌표상에 circle로 표현해주면 된다.
             * circle에서 줘야 할 속성은 cx(점의 x좌표), cy(점의 y좌표), r(점의 반지름)
-          * 
+          * label을 추가했다.
+            * x axis는 margin bottom의 크기를 늘려주고 공간을 확보했으며, y axis는 margin left의 공간을 활용해 집어넣었다. y axis의 경우, 세로로 글자를 돌려야 하기 때문에, transform 속성에 rotate값을 지정해주었으며, 위치를 잡기 위해 translate를 같이 넣어주었다.
+              * y axis의 경우 transform속성에서 rotate가 translate보다 먼저나오면 rotate된 후에 위치가 조정되므로 translate를 먼저 쓰고 rotate를 써야한다. 아래 참고
+              ```javascript
+              // 이게 아니라
+              <text transform={`rotate(-90) translate(${-yAxisLabelOffset},${innerHeight / 2})`}>{yAxisLabelText}</text>
+              // 이렇게 해야됨
+              <text transform={`translate(${-yAxisLabelOffset},${innerHeight / 2}) rotate(-90)`}> </text>
+              ```
