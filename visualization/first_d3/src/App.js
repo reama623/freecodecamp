@@ -1,4 +1,4 @@
-import { scaleBand, scaleLinear, max, format, min, extent } from "d3";
+import { scaleLinear, format, extent } from "d3";
 import { AxisBottom } from "./AxisBottom";
 import { AxisLeft } from "./AxisLeft";
 import { Marks } from "./Marks";
