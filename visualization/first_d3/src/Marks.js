@@ -8,14 +8,13 @@ export const Marks = ({
 }) =>
   data.map((d, i) => {
     return (
-      <circle
+      <line
         className="mark"
         key={i}
-        cx={xScale(xValue(d))}
-        cy={yScale(yValue(d))}
-        r={10}
+        x={xScale(xValue(d))}
+        y={yScale(yValue(d))}
       >
         <title>{tooltipFormat(xValue(d))}</title>
-      </circle>
+      </line>
     );
   });

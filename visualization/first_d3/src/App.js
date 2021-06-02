@@ -1,4 +1,4 @@
-import { scaleLinear, format, extent } from "d3";
+import { scaleLinear, format, extent, scaleTime, max, timeFormat } from "d3";
 import { AxisBottom } from "./AxisBottom";
 import { AxisLeft } from "./AxisLeft";
 import { Marks } from "./Marks";
@@ -21,25 +21,26 @@ const innerHeight = height - margin.top - margin.bottom;
 function App() {
   // custom 훅을 이용하여 데이터를 받아옴.
   const data = useData();
-  const xValue = (d) => d.sepal_length;
-  const xAxisLabelText = "Sepal Length";
-  const yValue = (d) => d.sepal_width;
-  const yAxisLabelText = "Sepal Width";
+  const xValue = (d) => d.timestamp;
+  const xAxisLabelText = "Time stamp";
+  const yValue = (d) => d.temperature;
+  const yAxisLabelText = "Temperature";
 
   const yScale = scaleLinear()
-    .domain(extent(data.map(yValue)))
+    .domain([max(data.map(yValue)), 0])
     .range([0, innerHeight]);
-  const xScale = scaleLinear()
+  const xScale = scaleTime()
     .domain(extent(data.map(xValue)))
-    .range([0, innerWidth])
-    .nice();
+    .range([0, innerWidth]);
 
-  const tickFormatter = format(".2s");
+  // const tickFormatter = format(".2s");
+  const tickFormatter = timeFormat('%x');
   const axisTickFormat = (n) => {
     if (!n) {
       return 0;
     }
-    return tickFormatter(n).replace("G", "B");
+    // return tickFormatter(n).replace("G", "B");
+    return tickFormatter(n);
   };
 
   return (
