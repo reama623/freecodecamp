@@ -31,7 +31,8 @@ function App() {
     .range([0, innerHeight]);
   const xScale = scaleLinear()
     .domain(extent(data.map(xValue)))
-    .range([0, innerWidth]);
+    .range([0, innerWidth])
+    .nice();
 
   const tickFormatter = format(".2s");
   const axisTickFormat = (n) => {
