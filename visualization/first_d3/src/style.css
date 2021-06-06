@@ -1,15 +1,20 @@
-.tick line{
-  stroke:#C0C0BB;
+html,
+body {
+  margin: 0;
 }
 
-.tick text{
-  fill: #645F5D;
+.tick line {
+  stroke: #c0c0bb;
 }
 
-.mark{
-  fill:#137B80
+.tick text {
+  fill: #645f5d;
 }
 
-.axisLabel{
-  font-size:30px;
+.mark {
+  fill: #137b80;
+}
+
+.axisLabel {
+  font-size: 30px;
 }

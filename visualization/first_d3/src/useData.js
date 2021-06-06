@@ -1,6 +1,8 @@
 import { csv } from "d3-fetch";
 import { useEffect, useState } from "react";
 
+import temperature from './assets/temperature.csv';
+
 /**
  * 1차 데이터 셋 - UN 인구 수 데이터
  */
@@ -24,7 +26,7 @@ const useData = () => {
       d.temperature = +d.temperature;
       return d;
     };
-    csv(url, row).then(setData);
+    csv(temperature, row).then(setData);
   }, []);
 
   return data;
