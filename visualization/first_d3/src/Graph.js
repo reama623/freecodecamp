@@ -15,11 +15,10 @@ const margin = { top: 20, right: 20, bottom: 70, left: 100 };
 const xAxisLabelOffset = 50;
 const yAxisLabelOffset = 50;
 
-
 const Graph = ({ width, height }) => {
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
-  
+
   const data = useData();
   const xValue = (d) => d.timestamp;
   const xAxisLabelText = "Time stamp";
@@ -28,10 +27,12 @@ const Graph = ({ width, height }) => {
 
   const yScale = scaleLinear()
     .domain([0, max(data.map(yValue))])
-    .range([innerHeight, 0]);
+    .range([innerHeight, 0])
+    .nice();
   const xScale = scaleTime()
     .domain(extent(data.map(xValue)))
-    .range([0, innerWidth]);
+    .range([0, innerWidth])
+    .nice();
 
   // const tickFormatter = format(".2s");
   const xAxisTickFormat = timeFormat("%a");
@@ -56,7 +57,7 @@ const Graph = ({ width, height }) => {
               xScale={xScale}
               innerHeight={innerHeight}
               axisTickFormat={xAxisTickFormat}
-              tick
+              tickOffset={5}
             />
             <text
               className="axisLabel"

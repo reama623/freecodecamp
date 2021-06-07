@@ -18,3 +18,15 @@ body {
 .axisLabel {
   font-size: 30px;
 }
+
+.marks circle {
+  fill: #137b80;
+}
+
+.marks path {
+  fill: none;
+  stroke: #137b80;
+  stroke-width: 4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
