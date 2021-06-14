@@ -1,10 +1,10 @@
-const Dropdown = ({ items, selectedValue, setSelectedValue }) => {
+const Dropdown = ({ options, selectedValue, onSelectedValueChange }) => {
   return (
     <select
-      onChange={(e) => setSelectedValue(e.target.value)}
+      onChange={(e) => onSelectedValueChange(e.target.value)}
       value={selectedValue}
     >
-      {items.map((item, i) => (
+      {options.map((item, i) => (
         <option value={item.value} key={i}>
           {item.label}
         </option>
