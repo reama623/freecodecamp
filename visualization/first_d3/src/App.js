@@ -1,4 +1,4 @@
-import { scaleLinear, format, extent } from "d3";
+import { scaleLinear, format, extent, scaleOrdinal } from "d3";
 import { AxisBottom } from "./AxisBottom";
 import { AxisLeft } from "./AxisLeft";
 import { Marks } from "./Marks";
@@ -42,7 +42,6 @@ const getAttributeLabel = (value) => {
 function App() {
   // custom 훅을 이용하여 데이터를 받아옴.
   const data = useData();
-
   const initialXAttribute = "sepal_length";
   const [xAttribute, setXAttribute] = useState(initialXAttribute);
   const xValue = (d) => d[xAttribute];
@@ -53,6 +52,8 @@ function App() {
   const yValue = (d) => d[yAttribute];
   const yAxisLabelText = getAttributeLabel(yAttribute);
 
+  const colorValue = (d) => d.species;
+
   const yScale = scaleLinear()
     .domain(extent(data.map(yValue)))
     .range([innerHeight, 0]);
@@ -60,6 +61,10 @@ function App() {
     .domain(extent(data.map(xValue)))
     .range([0, innerWidth])
     .nice();
+
+  const colorScale = scaleOrdinal()
+    .domain(data.map(colorValue))
+    .range(["#C073FA", "#FAB541", "#FAC0D1"]);
 
   const tickFormatter = format(".2s");
   const axisTickFormat = (n) => {
@@ -118,8 +123,10 @@ function App() {
               data={data}
               xScale={xScale}
               yScale={yScale}
+              colorScale={colorScale}
               xValue={xValue}
               yValue={yValue}
+              colorValue={colorValue}
               tooltipFormat={axisTickFormat}
             />
           </g>
