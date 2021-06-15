@@ -10,12 +10,13 @@ import Dropdown from "./Dropdown";
 
 import ReactDropdown from "react-dropdown";
 import "react-dropdown/style.css";
+import { ColorLegend } from "./ColorLegend";
 
 // const url =
 //   "https://gist.githubusercontent.com/reama623/b6c0dd948cecf951c7026220aa02fe57/raw/8e389ab4faadff97a8c9c5408bdcd9f8a7453376/cssNamedColors.csv";
 const width = 960;
 const height = 500;
-const margin = { top: 20, right: 20, bottom: 70, left: 100 };
+const margin = { top: 20, right: 200, bottom: 70, left: 100 };
 
 const xAxisLabelOffset = 50;
 const yAxisLabelOffset = 50;
@@ -53,6 +54,9 @@ function App() {
   const yAxisLabelText = getAttributeLabel(yAttribute);
 
   const colorValue = (d) => d.species;
+  const colorLabelText = "species";
+
+  const markRadius = 7;
 
   const yScale = scaleLinear()
     .domain(extent(data.map(yValue)))
@@ -119,6 +123,17 @@ function App() {
             >
               {xAxisLabelText}
             </text>
+            <g transform={`translate(${innerWidth + 50}, 50)`}>
+              <text
+                className="axis-label"
+                textAnchor="middle"
+                x={35}
+                y={-25}
+              >
+                {colorLabelText}
+              </text>
+              <ColorLegend colorScale={colorScale} innerWidth={innerWidth} />
+            </g>
             <Marks
               data={data}
               xScale={xScale}
@@ -127,6 +142,7 @@ function App() {
               xValue={xValue}
               yValue={yValue}
               colorValue={colorValue}
+              markRadius={markRadius}
               tooltipFormat={axisTickFormat}
             />
           </g>
