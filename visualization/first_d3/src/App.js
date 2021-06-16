@@ -1,4 +1,4 @@
-import { scaleLinear, format, extent } from "d3";
+import { scaleLinear, format, extent, scaleOrdinal } from "d3";
 import { AxisBottom } from "./AxisBottom";
 import { AxisLeft } from "./AxisLeft";
 import { Marks } from "./Marks";
@@ -8,11 +8,15 @@ import "./style.css";
 import { useState } from "react";
 import Dropdown from "./Dropdown";
 
+import ReactDropdown from "react-dropdown";
+import "react-dropdown/style.css";
+import { ColorLegend } from "./ColorLegend";
+
 // const url =
 //   "https://gist.githubusercontent.com/reama623/b6c0dd948cecf951c7026220aa02fe57/raw/8e389ab4faadff97a8c9c5408bdcd9f8a7453376/cssNamedColors.csv";
 const width = 960;
 const height = 500;
-const margin = { top: 20, right: 20, bottom: 70, left: 100 };
+const margin = { top: 20, right: 200, bottom: 70, left: 100 };
 
 const xAxisLabelOffset = 50;
 const yAxisLabelOffset = 50;
@@ -39,7 +43,6 @@ const getAttributeLabel = (value) => {
 function App() {
   // custom 훅을 이용하여 데이터를 받아옴.
   const data = useData();
-
   const initialXAttribute = "sepal_length";
   const [xAttribute, setXAttribute] = useState(initialXAttribute);
   const xValue = (d) => d[xAttribute];
@@ -50,6 +53,11 @@ function App() {
   const yValue = (d) => d[yAttribute];
   const yAxisLabelText = getAttributeLabel(yAttribute);
 
+  const colorValue = (d) => d.species;
+  const colorLabelText = "species";
+
+  const markRadius = 7;
+
   const yScale = scaleLinear()
     .domain(extent(data.map(yValue)))
     .range([innerHeight, 0]);
@@ -57,6 +65,10 @@ function App() {
     .domain(extent(data.map(xValue)))
     .range([0, innerWidth])
     .nice();
+
+  const colorScale = scaleOrdinal()
+    .domain(data.map(colorValue))
+    .range(["#C073FA", "#FAB541", "#FAC0D1"]);
 
   const tickFormatter = format(".2s");
   const axisTickFormat = (n) => {
@@ -71,22 +83,26 @@ function App() {
   }
   return (
     <>
-      <Dropdown
-        items={items}
-        selectedValue={xAttribute}
-        setSelectedValue={setXAttribute}
-      />
-      <Dropdown
-        items={items}
-        selectedValue={yAttribute}
-        setSelectedValue={setYAttribute}
-      />
+      <div className="menus-container">
+        <span className="dropdown-label">X:</span>
+        <ReactDropdown
+          options={items}
+          value={xAttribute}
+          onChange={({ value }) => setXAttribute(value)}
+        />
+        <span className="dropdown-label">Y:</span>
+        <ReactDropdown
+          options={items}
+          value={yAttribute}
+          onChange={({ value }) => setYAttribute(value)}
+        />
+      </div>
       <div style={{ border: "1px solid black" }}>
         <svg width={width} height={height}>
           <g transform={`translate(${margin.left}, ${margin.top})`}>
             <AxisLeft yScale={yScale} innerWidth={innerWidth} />
             <text
-              className="axisLabel"
+              className="axis-label"
               textAnchor="middle"
               transform={`translate(${-yAxisLabelOffset},${
                 innerHeight / 2
@@ -100,19 +116,33 @@ function App() {
               axisTickFormat={axisTickFormat}
             />
             <text
-              className="axisLabel"
+              className="axis-label"
               textAnchor="middle"
               x={innerWidth / 2}
               y={innerHeight + xAxisLabelOffset}
             >
               {xAxisLabelText}
             </text>
+            <g transform={`translate(${innerWidth + 50}, 50)`}>
+              <text
+                className="axis-label"
+                textAnchor="middle"
+                x={35}
+                y={-25}
+              >
+                {colorLabelText}
+              </text>
+              <ColorLegend colorScale={colorScale} innerWidth={innerWidth} />
+            </g>
             <Marks
               data={data}
               xScale={xScale}
               yScale={yScale}
+              colorScale={colorScale}
               xValue={xValue}
               yValue={yValue}
+              colorValue={colorValue}
+              markRadius={markRadius}
               tooltipFormat={axisTickFormat}
             />
           </g>
